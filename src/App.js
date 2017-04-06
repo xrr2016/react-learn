@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import { TodoForm, TodoList } from './components/todo'
+import { addTodo, generateId } from './lib/todoHelpers'
 
 class App extends Component {
-  constructor () {
-    super()
-    this.state = {
+    state = {
       todos: [
         {id: 0, name: 'Learn React.', isComplete: true},
         {id: 1, name: 'Learn JSX.', isComplete: false},
@@ -14,14 +13,44 @@ class App extends Component {
       ],
       currentTodo: ''
     }
-    this.handleInputChange = this.handleInputChange.bind(this)
-  }
-  handleInputChange (event) {
+    
+  // constructor () {
+  //   super()
+  //   this.handleInputChange = this.handleInputChange.bind(this)
+  //   this.handleEmptySubmit = this.handleEmptySubmit.bind(this)
+  //   this.handleSubmit = this.handleSubmit.bind(this)
+  // }
+
+  handleInputChange = (event) => {
     this.setState({
       currentTodo: event.target.value
     })
   }
+
+  handleSubmit = (event) => {
+    event.preventDefault()
+    // if (this.state.currentTodo.length <= 0) {
+    //   return
+    // }
+    const newId = generateId()
+    const newTodo = {id: newId, name: this.state.currentTodo, isComplete: false}
+    const updatedTodos = addTodo(this.state.todos, newTodo)
+    this.setState({
+      todos: updatedTodos,
+      currentTodo: '',
+      errorMessage: ''
+    })
+  }
+
+  handleEmptySubmit = (event) => {
+    event.preventDefault()
+    this.setState({
+      errorMessage: '请输入TODO的项目名称.'
+    })
+  }
+
   render () {
+    const submitHandler = this.state.currentTodo ? this.handleSubmit : this.handleEmptySubmit
     return (
       <div className='App'>
         <div className='App-header'>
@@ -29,8 +58,10 @@ class App extends Component {
           <h2>React Todos</h2>
         </div>
         <div className='todo-app'>
+          {this.state.errorMessage && <span className='error'>{this.state.errorMessage}</span>}
           <TodoForm
             handleInputChange={this.handleInputChange}
+            handleSubmit={submitHandler}
             currentTodo={this.state.currentTodo} />
           <TodoList todos={this.state.todos} />
         </div>

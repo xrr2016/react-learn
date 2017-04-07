@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
-import { TodoForm, TodoList } from './components/todo'
-import { addTodo, generateId, findById, toggleTodo, updateTodo } from './lib/todoHelpers'
+import { TodoForm, TodoList, Footer } from './components/todo'
+import { addTodo, generateId, findById, toggleTodo, updateTodo, removeTodo } from './lib/todoHelpers'
+import { pipe, partial } from './lib/utils'
 
 class App extends Component {
     state = {
@@ -20,10 +21,17 @@ class App extends Component {
   //   this.handleEmptySubmit = this.handleEmptySubmit.bind(this)
   //   this.handleSubmit = this.handleSubmit.bind(this)
   // }
+  handleRemove = (id, event) => {
+    event.preventDefault()
+    const updatedTodos = removeTodo(this.state.todos, id)
+    this.setState({todos: updatedTodos})
+  }
+
   handleToggle = (id) => {
-    const todo = findById(id, this.state.todos)
-    const toggled = toggleTodo(todo)
-    const updatedTodos = updateTodo(this.state.todos, toggled)
+    const getUpdatedTodos = pipe(findById, toggleTodo, partial(updateTodo, this.state.todos))
+    // const todo = findById(id, this.state.todos)
+    // const toggled = toggleTodo(todo)
+    const updatedTodos = getUpdatedTodos(id, this.state.todos)
     this.setState({todos: updatedTodos})
   }
 
@@ -63,14 +71,19 @@ class App extends Component {
           <img src={logo} className='App-logo' alt='logo' />
           <h2>React Todos</h2>
         </div>
+
         <div className='todo-app'>
           {this.state.errorMessage && <span className='error'>{this.state.errorMessage}</span>}
           <TodoForm
             handleInputChange={this.handleInputChange}
             handleSubmit={submitHandler}
             currentTodo={this.state.currentTodo} />
-          <TodoList  handleToggle={this.handleToggle} todos={this.state.todos} />
+          <TodoList
+            handleToggle={this.handleToggle}
+            handleRemove={this.handleRemove}
+            todos={this.state.todos} />
         </div>
+        <Footer /> 
       </div>
     )
   }

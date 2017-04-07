@@ -82,8 +82,8 @@ class App extends Component {
             handleToggle={this.handleToggle}
             handleRemove={this.handleRemove}
             todos={this.state.todos} />
+          <Footer />
         </div>
-        <Footer /> 
       </div>
     )
   }

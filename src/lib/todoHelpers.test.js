@@ -1,4 +1,4 @@
-import { addTodo, findById, toggleTodo, updateTodo, removeTodo } from './todoHelpers'
+import { addTodo, findById, toggleTodo, updateTodo, removeTodo, filterTodos } from './todoHelpers'
 
 test.skip('addTodo should add the passed todo to the list', () => {
   const startTodos = [
@@ -86,7 +86,7 @@ test.skip('updateTodo should not mutate the originl array', () => {
   expect(result).not.toBe(startTodos)
 })
 
-test('removeTodo should remove an item by id', () => {
+test.skip('removeTodo should remove an item by id', () => {
   const startTodos = [
     {id: 1, name: 'one', isComplete: false},
     {id: 2, name: 'two', isComplete: false},
@@ -102,7 +102,7 @@ test('removeTodo should remove an item by id', () => {
   expect(result).toEqual(expectedTodos)
 })
 
-test('removeTodo should not mutate the originl array', () => {
+test.skip('removeTodo should not mutate the originl array', () => {
   const startTodos = [
     {id: 1, name: 'one', isComplete: false},
     {id: 2, name: 'two', isComplete: false},
@@ -113,6 +113,34 @@ test('removeTodo should not mutate the originl array', () => {
 
   expect(result).not.toBe(startTodos)
 })
+
+test('filterTodos should return all items for the root route', () => {
+  const startTodos = [
+    {id: 1, name: 'one', isComplete: false},
+    {id: 2, name: 'two', isComplete: false},
+    {id: 3, name: 'three', isComplete: false}
+  ]
+
+  const result = filterTodos(startTodos, '/')
+
+  expect(result).toBe(startTodos)
+})
+
+test('filterTodos should return only completed items for the complete route', () => {
+
+})
+
+test('filterTodos should return only active items for the complete route', () => {})
+
+
+
+
+
+
+
+
+
+
 
 
 

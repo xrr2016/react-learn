@@ -10,7 +10,7 @@ export class Link extends Component {
   handleChick = (event) => {
     event.preventDefault()
     // history.pushState(null, '', this.props.to)
-    console.dir(this.context)
+    // console.dir(this.context)
     this.context.linkHandler(this.props.to)
   }
   

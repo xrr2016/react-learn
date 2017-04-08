@@ -20,7 +20,7 @@ export class Router extends Component {
     linkHandler: React.PropTypes.func
   }
 
-  getChildContenx () {
+  getChildContext () {
     return {
       route: this.state.route,
       linkHandler: this.handleLinkClick

@@ -60,3 +60,14 @@ li:hover span.delete-item {
   font-size: 16px;
   color: crimson;
 }
+
+.footer a {
+  color: lightblue;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.footer a.active {
+  font-weight: bold;
+  color: cornflowerblue;
+}

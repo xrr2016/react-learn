@@ -20,10 +20,16 @@ export class Router extends Component {
     linkHandler: React.PropTypes.func
   }
 
-  getChildContext () {
+  getChildContext() {
     return {
       route: this.state.route,
       linkHandler: this.handleLinkClick
+    }
+  }
+
+  componentDidMount() {
+    window.onpopstate = () => {
+      this.setState({route: getCurrentPath()})
     }
   }
 

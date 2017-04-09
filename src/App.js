@@ -63,7 +63,7 @@ class App extends Component {
   handleEmptySubmit = (event) => {
     event.preventDefault()
     this.setState({
-      errorMessage: '请输入TODO的项目名称.'
+      errorMessage: '请输入todo的项目名称'
     })
   }
 

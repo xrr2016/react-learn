@@ -11,22 +11,7 @@
       "isComplete": true
     },
     {
-      "id": 3,
-      "name": "Connect  to Server",
-      "isComplete": false
-    },
-    {
-      "id": 4,
-      "name": "Setup fetch",
-      "isComplete": false
-    },
-    {
-      "id": 96664,
-      "name": "New Todo",
-      "isComplete": false
-    },
-    {
-      "id": 28024,
+      "id": 91231,
       "name": "wow!",
       "isComplete": false
     }

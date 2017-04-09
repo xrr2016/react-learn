@@ -54,11 +54,15 @@ li:hover span.delete-item {
   visibility: visible;
 }
 
-.error {
+.error, .success {
   display: block;
   padding: 12px 12px;
-  font-size: 14px;
+  font-size: 16px;
   color: crimson;
+}
+
+.success {
+  color: greenyellow;
 }
 
 .footer a {

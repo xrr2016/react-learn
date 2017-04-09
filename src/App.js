@@ -12,7 +12,7 @@ import {
   filterTodos
 } from './lib/todoHelpers'
 import { pipe, partial } from './lib/utils'
-import { loadTodos, createTodo } from './lib/todoService'
+import { loadTodos, createTodo, saveTodo, deleteTodo } from './lib/todoService'
 
 class App extends Component {
   state = {
@@ -42,18 +42,20 @@ class App extends Component {
     event.preventDefault()
     const updatedTodos = removeTodo(this.state.todos, id)
     this.setState({ todos: updatedTodos })
+    deleteTodo(id)
+        .then(() => this.showTempMessage('Todo Removed.'))
   };
 
   handleToggle = id => {
-    const getUpdatedTodos = pipe(
-      findById,
-      toggleTodo,
-      partial(updateTodo, this.state.todos)
-    )
+    const getToggledTodo = pipe(findById, toggleTodo)
+    const updated = getToggledTodo(id, this.state.todos) 
+    const getUpdatedTodos = partial(updateTodo, this.state.todos)
     // const todo = findById(id, this.state.todos)
     // const toggled = toggleTodo(todo)
-    const updatedTodos = getUpdatedTodos(id, this.state.todos)
-    this.setState({ todos: updatedTodos })
+    const updatedTodos = getUpdatedTodos(updated)
+    this.setState({todos: updatedTodos})
+    saveTodo(updated)
+        .then(() => this.showTempMessage('Todo Updated.'))
   };
 
   handleInputChange = event => {
@@ -80,8 +82,14 @@ class App extends Component {
       errorMessage: ''
     })
     createTodo(newTodo)
-      .then(() => console.log(`Todo added.`))
+      .then(() => this.showTempMessage('Todo Added!'))
   };
+
+  showTempMessage = (msg) => {
+    this.setState({message: msg})
+    setTimeout(() => this.setState({message: ''}), 2000)
+  }
+
 
   handleEmptySubmit = event => {
     event.preventDefault()
@@ -106,6 +114,8 @@ class App extends Component {
         <div className='todo-app'>
           {this.state.errorMessage &&
             <span className='error'>{this.state.errorMessage}</span>}
+          {this.state.message &&
+            <span className='success'>{this.state.message}</span>}
           <TodoForm
             handleInputChange={this.handleInputChange}
             handleSubmit={submitHandler}

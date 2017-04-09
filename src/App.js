@@ -2,22 +2,35 @@ import React, { Component } from 'react'
 import logo from './logo.svg'
 import './App.css'
 import { TodoForm, TodoList, Footer } from './components/todo'
-import { addTodo, generateId, findById, toggleTodo, updateTodo, removeTodo, filterTodos } from './lib/todoHelpers'
+import {
+  addTodo,
+  generateId,
+  findById,
+  toggleTodo,
+  updateTodo,
+  removeTodo,
+  filterTodos
+} from './lib/todoHelpers'
 import { pipe, partial } from './lib/utils'
+import { loadTodos, createTodo } from './lib/todoService'
 
 class App extends Component {
-    state = {
-      todos: [
-        {id: 0, name: 'Learn React.', isComplete: true},
-        {id: 1, name: 'Learn JSX.', isComplete: false},
-        {id: 2, name: 'Learn Redux!', isComplete: false}
-      ],
-      currentTodo: ''
-    }
-    
-    static contextTypes = {
-      route: React.PropTypes.string
-    }
+  state = {
+    todos: [],
+    currentTodo: ''
+  };
+
+  static contextTypes = {
+    route: React.PropTypes.string
+  };
+
+  componentDidMount() {
+    loadTodos()
+      .then(todos => {
+        console.log(todos)
+        this.setState({todos})
+      })
+  }
 
   // constructor () {
   //   super()
@@ -28,47 +41,59 @@ class App extends Component {
   handleRemove = (id, event) => {
     event.preventDefault()
     const updatedTodos = removeTodo(this.state.todos, id)
-    this.setState({todos: updatedTodos})
-  }
+    this.setState({ todos: updatedTodos })
+  };
 
-  handleToggle = (id) => {
-    const getUpdatedTodos = pipe(findById, toggleTodo, partial(updateTodo, this.state.todos))
+  handleToggle = id => {
+    const getUpdatedTodos = pipe(
+      findById,
+      toggleTodo,
+      partial(updateTodo, this.state.todos)
+    )
     // const todo = findById(id, this.state.todos)
     // const toggled = toggleTodo(todo)
     const updatedTodos = getUpdatedTodos(id, this.state.todos)
-    this.setState({todos: updatedTodos})
-  }
+    this.setState({ todos: updatedTodos })
+  };
 
-  handleInputChange = (event) => {
+  handleInputChange = event => {
     this.setState({
       currentTodo: event.target.value
     })
-  }
+  };
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault()
     // if (this.state.currentTodo.length <= 0) {
     //   return
     // }
     const newId = generateId()
-    const newTodo = {id: newId, name: this.state.currentTodo, isComplete: false}
+    const newTodo = {
+      id: newId,
+      name: this.state.currentTodo,
+      isComplete: false
+    }
     const updatedTodos = addTodo(this.state.todos, newTodo)
     this.setState({
       todos: updatedTodos,
       currentTodo: '',
       errorMessage: ''
     })
-  }
+    createTodo(newTodo)
+      .then(() => console.log(`Todo added.`))
+  };
 
-  handleEmptySubmit = (event) => {
+  handleEmptySubmit = event => {
     event.preventDefault()
     this.setState({
       errorMessage: '请输入todo的项目名称'
     })
-  }
+  };
 
   render () {
-    const submitHandler = this.state.currentTodo ? this.handleSubmit : this.handleEmptySubmit
+    const submitHandler = this.state.currentTodo
+      ? this.handleSubmit
+      : this.handleEmptySubmit
     const displayTodos = filterTodos(this.state.todos, this.context.route)
 
     return (
@@ -79,15 +104,18 @@ class App extends Component {
         </div>
 
         <div className='todo-app'>
-          {this.state.errorMessage && <span className='error'>{this.state.errorMessage}</span>}
+          {this.state.errorMessage &&
+            <span className='error'>{this.state.errorMessage}</span>}
           <TodoForm
             handleInputChange={this.handleInputChange}
             handleSubmit={submitHandler}
-            currentTodo={this.state.currentTodo} />
+            currentTodo={this.state.currentTodo}
+          />
           <TodoList
             handleToggle={this.handleToggle}
             handleRemove={this.handleRemove}
-            todos={displayTodos} />
+            todos={displayTodos}
+          />
           <Footer />
         </div>
       </div>

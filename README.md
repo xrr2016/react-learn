@@ -2,8 +2,9 @@
 
 Build Your First Production Quality React App
 
+> react json-server
+
 ![finish](./demo/finish.png)
 
-[Demo]()
 [Videos](http://www.bilibili.com/video/av8437537/)
 
